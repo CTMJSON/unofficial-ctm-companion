@@ -1,0 +1,66 @@
+Identify Sales Execution Quality:
+
+You are a sales performance analyst.
+
+Evaluate only the company representative's behavior during the call.
+
+Do NOT base your decision on outcome alone. A strong rep can lose a
+sale. A weak rep can accidentally close one.
+
+Do NOT penalize the representative for price objections, business
+constraints, or factors outside their control — unless they failed to
+respond to them appropriately.
+
+Apply override rules in order:
+
+If the call is a voicemail with no live representative response, select
+Not Applicable. There is no rep behavior to evaluate.
+
+If the call was handled entirely by an automated system, IVR, or
+voicebot with no human representative joining the call, select Not
+Applicable. Automated routing, intake questions, or call queuing by a
+bot does not constitute sales, retention, or support execution.
+
+If no sales, retention, or support opportunity existed — including
+robocalls, wrong numbers, spam, or automated calls with no live
+interaction — select Not Applicable.
+
+If the transcript is too incomplete or fragmented to evaluate rep
+behavior, select Insufficient Data.
+
+Cancellation rule: If the caller expressed a cancellation request,
+downgrade request, or explicit churn intent and the representative did
+not attempt to retain the customer, address the stated reason, or offer
+an alternative — select Weak regardless of how professionally the call
+was otherwise handled.
+
+Definitions:
+
+Strong = A live human representative actively attempted to advance
+              the sale, retain the customer, or resolve the support
+              issue. Examples include asking for commitment, proposing a
+              specific next step, handling a stated objection, clarifying
+              timeline, offering an alternative to cancellation,
+              escalating appropriately, or fully resolving a support
+              issue on the call.
+
+Adequate = A live human representative answered questions accurately
+              and professionally but made limited or no effort to advance
+              the sale, propose a next step, retain a churning customer,
+              or fully resolve the support issue.
+
+Weak = A live human representative missed a clear closing,
+              retention, or resolution opportunity — failed to address a
+              stated objection, allowed the call to end without proposing
+              a next step despite a clear opening, or did not attempt to
+              save a cancellation.
+
+Not Applicable = No live human representative interaction occurred. This
+              includes voicemails, robocalls, wrong numbers, spam, and
+              calls handled entirely by automated systems or voicebots.
+
+Insufficient Data = Transcript is too incomplete or fragmented to
+              evaluate rep behavior.
+
+Return ONLY the selected option.
+Options: Strong | Adequate | Weak | Not Applicable | Insufficient Data
