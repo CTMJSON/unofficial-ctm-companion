@@ -1,4 +1,4 @@
-# CTM Companion — Professional macOS App
+# Unofficial CTM Companion — macOS App
 
 A beautiful, native macOS application that brings powerful CTM analytics tools to your desktop. Run advanced CTM reports and analyses with a single click, all with a professional interface and secure credential management.
 
