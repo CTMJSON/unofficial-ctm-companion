@@ -83,7 +83,7 @@ struct CredentialsTab: View {
             Section("Optional") {
                 HStack(alignment: .center, spacing: 12) {
                     VStack(alignment: .trailing, spacing: 16) {
-                        Text("Make.com Webhook")
+                        Text("Webhook URL")
                             .font(.body)
                         Text("Converted Field")
                             .font(.body)
@@ -95,7 +95,7 @@ struct CredentialsTab: View {
                     VStack(alignment: .leading, spacing: 8) {
                         TextField("", text: $credentials.makeWebhookURL)
                             .placeholder(when: credentials.makeWebhookURL.isEmpty) {
-                                Text("https://hook.make.com/...").foregroundColor(.gray)
+                                Text("https://webhook.site/... (any webhook endpoint)").foregroundColor(.gray)
                             }
 
                         TextField("", text: $credentials.ctmConvertedField)

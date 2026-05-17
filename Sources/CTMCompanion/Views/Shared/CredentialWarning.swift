@@ -14,7 +14,7 @@ struct CredentialWarning: View {
             case .ctmAccountID:
                 return "Default Account ID"
             case .makeWebhookURL:
-                return "Make.com Webhook URL"
+                return "Webhook URL"
             case .ctmConvertedField:
                 return "CTM Converted Field"
             case .ctmScoreField:
