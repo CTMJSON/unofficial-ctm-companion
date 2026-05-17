@@ -35,6 +35,12 @@ if [ -d "$RESOURCE_BUNDLE" ]; then
     echo "✅ Resource bundle copied"
 fi
 
+# Copy app icon
+if [ -f "Sources/CTMCompanion/Resources/AppIcon.icns" ]; then
+    cp "Sources/CTMCompanion/Resources/AppIcon.icns" "$APP_BUNDLE/Contents/Resources/"
+    echo "✅ App icon copied"
+fi
+
 # Create Info.plist
 cat > "$APP_BUNDLE/Contents/Info.plist" << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
@@ -51,6 +57,8 @@ cat > "$APP_BUNDLE/Contents/Info.plist" << 'EOF'
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>CTM Companion</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
