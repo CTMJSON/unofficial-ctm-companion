@@ -8,6 +8,7 @@ struct SettingsView: View {
         case output
         case python
         case history
+        case about
     }
 
     var body: some View {
@@ -35,6 +36,12 @@ struct SettingsView: View {
                     Label("History", systemImage: "clock.fill")
                 }
                 .tag(SettingsTab.history)
+
+            AboutTab()
+                .tabItem {
+                    Label("About", systemImage: "info.circle.fill")
+                }
+                .tag(SettingsTab.about)
         }
         .frame(width: 600, height: 400)
     }
@@ -278,5 +285,89 @@ struct HistoryTab: View {
         } else {
             return String(format: "%.1fh", seconds / 3600)
         }
+    }
+}
+
+struct AboutTab: View {
+    var body: some View {
+        Form {
+            Section {
+                VStack(alignment: .center, spacing: 16) {
+                    ZStack {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        Color(red: 0.01, green: 0.75, blue: 0.96),
+                                        Color(red: 0.07, green: 0.59, blue: 0.79),
+                                        Color(red: 0.09, green: 0.36, blue: 0.55)
+                                    ]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 80, height: 80)
+
+                        Text("CTM")
+                            .font(.system(size: 32, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+
+                    VStack(alignment: .center, spacing: 4) {
+                        Text("CTM Companion")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        Text("Version 1.0")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+            }
+
+            Section("About") {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("CTM Companion brings powerful CTM analytics tools directly to your macOS desktop. All tools run locally with your credentials stored securely in Keychain.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label("7 integrated tools", systemImage: "checkmark.circle.fill")
+                            .font(.caption)
+                        Label("Secure Keychain storage", systemImage: "checkmark.circle.fill")
+                            .font(.caption)
+                        Label("Local execution only", systemImage: "checkmark.circle.fill")
+                            .font(.caption)
+                        Label("No telemetry or tracking", systemImage: "checkmark.circle.fill")
+                            .font(.caption)
+                    }
+                    .foregroundColor(BrandColors.success)
+                }
+            }
+
+            Section("Developer") {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("This application is developed and maintained as a hobby and passionate side project.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+
+                    HStack(spacing: 4) {
+                        Text("By")
+                            .font(.caption)
+                        Link("jason.smith@ctm.com", destination: URL(string: "mailto:jason.smith@ctm.com")!)
+                            .font(.caption)
+                            .foregroundColor(BrandColors.primary)
+                    }
+
+                    Link("View on GitHub", destination: URL(string: "https://github.com/CTMJSON/ctm-companion")!)
+                        .font(.caption)
+                        .foregroundColor(BrandColors.primary)
+                }
+            }
+        }
+        .padding()
     }
 }
