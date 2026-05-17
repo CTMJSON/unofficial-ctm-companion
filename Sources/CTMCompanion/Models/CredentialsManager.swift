@@ -6,24 +6,25 @@ class CredentialsManager {
     static let shared = CredentialsManager()
 
     private var isLoading = true
+    private var batchSaveTimer: Timer?
 
     var ctmBasicAuth: String = "" {
-        didSet { if !isLoading { save(.ctmBasicAuth, value: ctmBasicAuth) } }
+        didSet { if !isLoading { scheduleBatchSave() } }
     }
     var openAIKey: String = "" {
-        didSet { if !isLoading { save(.openAIKey, value: openAIKey) } }
+        didSet { if !isLoading { scheduleBatchSave() } }
     }
     var ctmAccountID: String = "" {
-        didSet { if !isLoading { save(.ctmAccountID, value: ctmAccountID) } }
+        didSet { if !isLoading { scheduleBatchSave() } }
     }
     var makeWebhookURL: String = "" {
-        didSet { if !isLoading { save(.makeWebhookURL, value: makeWebhookURL) } }
+        didSet { if !isLoading { scheduleBatchSave() } }
     }
     var ctmConvertedField: String = "" {
-        didSet { if !isLoading { save(.ctmConvertedField, value: ctmConvertedField) } }
+        didSet { if !isLoading { scheduleBatchSave() } }
     }
     var ctmScoreField: String = "" {
-        didSet { if !isLoading { save(.ctmScoreField, value: ctmScoreField) } }
+        didSet { if !isLoading { scheduleBatchSave() } }
     }
 
     private init() {
@@ -38,6 +39,26 @@ class CredentialsManager {
         makeWebhookURL = (try? KeychainService.load(.makeWebhookURL)) ?? ""
         ctmConvertedField = (try? KeychainService.load(.ctmConvertedField)) ?? ""
         ctmScoreField = (try? KeychainService.load(.ctmScoreField)) ?? ""
+    }
+
+    private func scheduleBatchSave() {
+        // Cancel any pending save
+        batchSaveTimer?.invalidate()
+
+        // Wait 1 second before saving ALL credentials in batch (ONE keychain prompt!)
+        batchSaveTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [weak self] _ in
+            self?.batchSave()
+        }
+    }
+
+    private func batchSave() {
+        // Save ALL credentials together
+        save(.ctmBasicAuth, value: ctmBasicAuth)
+        save(.openAIKey, value: openAIKey)
+        save(.ctmAccountID, value: ctmAccountID)
+        save(.makeWebhookURL, value: makeWebhookURL)
+        save(.ctmConvertedField, value: ctmConvertedField)
+        save(.ctmScoreField, value: ctmScoreField)
     }
 
     private func save(_ key: CredentialKey, value: String) {
