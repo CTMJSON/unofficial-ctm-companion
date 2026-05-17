@@ -348,6 +348,87 @@ struct AboutTab: View {
                 }
             }
 
+            Section("Security & Privacy") {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Your data is yours. Nothing is collected, stored on disk, or sent anywhere without your explicit knowledge.")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.secondary)
+
+                    Divider()
+
+                    Text("🔒 Credential Security").font(.caption).fontWeight(.semibold)
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("• Stored in macOS Keychain (OS-level encryption)")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• Each credential in separate encrypted Keychain entry")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• Never written to disk as plain text")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• Never transmitted to third parties")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• Only used for CTM API and OpenAI API calls")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• Secure update mechanism (no delete-then-add prompts)")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Text("🚀 Script Execution").font(.caption).fontWeight(.semibold).padding(.top, 8)
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("• All scripts run locally on your machine")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• Python runs in isolated venv (~/Library/Application Support/)")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• Only standard Python packages (requests, openai)")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• Output saved only to ~/Documents/CTM Companion/")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Text("📊 Data Collection").font(.caption).fontWeight(.semibold).padding(.top, 8)
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("• No telemetry or usage tracking")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• No data uploads to any server")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• No analytics or crash reporting")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• No network requests except CTM API and OpenAI API")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Text("💾 Local Storage").font(.caption).fontWeight(.semibold).padding(.top, 8)
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("• Credentials: macOS Keychain only")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• Output files: Local disk only")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• Run history: Local JSON in Application Support")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("• No cloud sync or backup")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+
             Section("Developer") {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("This application is developed and maintained as a hobby and passionate side project.")
