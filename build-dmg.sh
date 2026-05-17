@@ -36,10 +36,14 @@ if [ -d "$RESOURCE_BUNDLE" ]; then
 fi
 
 # Copy app icon
-if [ -f "Sources/CTMCompanion/Resources/AppIcon.icns" ]; then
-    cp "Sources/CTMCompanion/Resources/AppIcon.icns" "$APP_BUNDLE/Contents/Resources/"
+if [ -f "Sources/CTMCompanion/Resources/AppIcon.png" ]; then
+    cp "Sources/CTMCompanion/Resources/AppIcon.png" "$APP_BUNDLE/Contents/Resources/"
     echo "✅ App icon copied"
 fi
+
+# Code sign the app (required for macOS Gatekeeper)
+echo "📦 Step 2b: Code signing app..."
+codesign -s - "$APP_BUNDLE" -f 2>&1 | grep -E "replacing|error" || echo "✅ App signed"
 
 # Create Info.plist
 cat > "$APP_BUNDLE/Contents/Info.plist" << 'EOF'
@@ -58,7 +62,7 @@ cat > "$APP_BUNDLE/Contents/Info.plist" << 'EOF'
 	<key>CFBundleName</key>
 	<string>CTM Companion</string>
 	<key>CFBundleIconFile</key>
-	<string>AppIcon</string>
+	<string>AppIcon.png</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
