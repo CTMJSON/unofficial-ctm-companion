@@ -61,35 +61,56 @@ actor ScriptRunner {
 
     private func getScriptPath(for tool: ToolDefinition) throws -> String {
         let bundle = Bundle.main
-        let scriptName = tool.scriptFilename.replacingOccurrences(of: ".py", with: "")
+        let fullScriptName = tool.scriptFilename
+        let scriptName = fullScriptName.replacingOccurrences(of: ".py", with: "")
+        let fm = FileManager.default
 
         // Try main bundle first
         if let path = bundle.path(forResource: scriptName, ofType: "py", inDirectory: "Scripts") {
             return path
         }
 
-        // Try resource bundle (for SPM executable targets)
-        if let resourceBundlePath = bundle.path(forResource: "CTMCompanion_CTMCompanion", ofType: "bundle"),
-           let resourceBundle = Bundle(path: resourceBundlePath),
-           let path = resourceBundle.path(forResource: scriptName, ofType: "py", inDirectory: "Scripts") {
+        // Try with full filename (preserves spaces in "AskAi Prompt Enhancer")
+        if let path = bundle.path(forResource: fullScriptName, ofType: "", inDirectory: "Scripts") {
             return path
         }
 
-        // Fallback: check Scripts directory directly
-        let fm = FileManager.default
-        let scriptsDirs = [
+        // Try resource bundle (for SPM executable targets)
+        let bundleNames = ["CTMCompanion_CTMCompanion", "CTMCompanion"]
+        for bundleName in bundleNames {
+            if let resourceBundlePath = bundle.path(forResource: bundleName, ofType: "bundle"),
+               let resourceBundle = Bundle(path: resourceBundlePath) {
+                if let path = resourceBundle.path(forResource: scriptName, ofType: "py", inDirectory: "Scripts") {
+                    return path
+                }
+                if let path = resourceBundle.path(forResource: fullScriptName, ofType: "", inDirectory: "Scripts") {
+                    return path
+                }
+            }
+        }
+
+        // Fallback: check multiple possible Scripts directories
+        let possibleDirs = [
             bundle.resourceURL?.appendingPathComponent("Scripts"),
-            bundle.bundleURL.appendingPathComponent("Scripts")
+            bundle.bundleURL.appendingPathComponent("Scripts"),
+            bundle.bundleURL.appendingPathComponent("Contents/Resources/Scripts"),
+            URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Scripts")
         ].compactMap { $0 }
 
-        for dir in scriptsDirs {
+        for dir in possibleDirs {
+            // Try with scriptName
             let scriptPath = dir.appendingPathComponent("\(scriptName).py").path
             if fm.fileExists(atPath: scriptPath) {
                 return scriptPath
             }
+            // Try with full filename (for files with spaces)
+            let fullPath = dir.appendingPathComponent(fullScriptName).path
+            if fm.fileExists(atPath: fullPath) {
+                return fullPath
+            }
         }
 
-        throw ScriptError.scriptNotFound(tool.scriptFilename)
+        throw ScriptError.scriptNotFound(fullScriptName)
     }
 
     private func buildEnvironment(credentials: CredentialStore) -> [String: String] {

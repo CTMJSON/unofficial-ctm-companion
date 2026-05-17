@@ -24,8 +24,16 @@ echo ""
 echo "📦 Step 2: Creating app bundle..."
 rm -rf "$APP_BUNDLE"
 mkdir -p "$APP_DIR"
+mkdir -p "$APP_BUNDLE/Contents/Resources"
 cp "$EXECUTABLE" "$APP_DIR/CTMCompanion"
 chmod +x "$APP_DIR/CTMCompanion"
+
+# Copy resource bundle with scripts
+RESOURCE_BUNDLE=".build/release/CTMCompanion_CTMCompanion.bundle"
+if [ -d "$RESOURCE_BUNDLE" ]; then
+    cp -R "$RESOURCE_BUNDLE" "$APP_BUNDLE/Contents/Resources/"
+    echo "✅ Resource bundle copied"
+fi
 
 # Create Info.plist
 cat > "$APP_BUNDLE/Contents/Info.plist" << 'EOF'

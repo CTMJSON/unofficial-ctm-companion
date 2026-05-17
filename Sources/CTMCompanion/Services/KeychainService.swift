@@ -8,13 +8,25 @@ class KeychainService {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: Self.service,
-            kSecAttrAccount as String: key.rawValue,
-            kSecValueData as String: value.data(using: .utf8) ?? Data()
+            kSecAttrAccount as String: key.rawValue
         ]
 
-        SecItemDelete(query as CFDictionary)
+        let attributes: [String: Any] = [
+            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+            kSecValueData as String: value.data(using: .utf8) ?? Data(),
+            kSecUseDataProtectionKeychain as String: true
+        ]
 
-        let status = SecItemAdd(query as CFDictionary, nil)
+        // Try to update first (suppresses prompts better than delete+add)
+        var status = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
+
+        // If item doesn't exist, create it
+        if status == errSecItemNotFound {
+            var addQuery = query
+            addQuery.merge(attributes) { _, new in new }
+            status = SecItemAdd(addQuery as CFDictionary, nil)
+        }
+
         guard status == errSecSuccess else {
             throw KeychainError.saveFailed(status)
         }
@@ -25,6 +37,7 @@ class KeychainService {
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: Self.service,
             kSecAttrAccount as String: key.rawValue,
+            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
             kSecReturnData as String: true
         ]
 
@@ -50,7 +63,8 @@ class KeychainService {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: Self.service,
-            kSecAttrAccount as String: key.rawValue
+            kSecAttrAccount as String: key.rawValue,
+            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly
         ]
 
         let status = SecItemDelete(query as CFDictionary)
