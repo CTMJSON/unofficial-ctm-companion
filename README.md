@@ -10,8 +10,9 @@ A beautiful, native macOS application that brings powerful CTM analytics tools t
 
 ## 📋 What's Inside
 
-CTM Companion integrates **6 powerful analysis tools** directly into your macOS:
+CTM Companion integrates **7 powerful tools** directly into your macOS:
 
+### Analysis Tools (6)
 | Tool | Purpose | Output |
 |------|---------|--------|
 | **Account Assessment** | Full health report of your CTM account with KPIs and detailed metrics | HTML + 7 CSV files |
@@ -20,6 +21,11 @@ CTM Companion integrates **6 powerful analysis tools** directly into your macOS:
 | **AskAI Enhancer** | Optimize and improve your AI prompts using ChatGPT | Markdown + CSV |
 | **Q&A Report** | Extract and analyze call transcripts and Q&A pairs | HTML report |
 | **VoiceAI Analyzer** | Analyze voice quality and AI performance metrics | CSV data |
+
+### Communication Tool (1)
+| Tool | Purpose | Features |
+|------|---------|----------|
+| **CTM Softphone** | Embedded phone interface with call logs and click-to-call | Live activity logs, auto-dialing, account management |
 
 All tools run **locally on your machine** with your credentials stored securely in macOS Keychain.
 
@@ -178,6 +184,38 @@ Analyze voice quality and AI performance metrics.
 - Transcription accuracy
 - Agent handoff rates
 - Customer satisfaction signals
+
+---
+
+### 7. CTM Softphone
+Embedded phone interface for making calls, viewing activity logs, and managing your CTM account directly.
+
+**Setup (One-Time):**
+The softphone requires the Flask web app to be running locally. This happens automatically when you click "Run Tool" for the first time.
+
+**Steps:**
+1. Click "CTM Softphone" in sidebar
+2. Click **Run Tool**
+3. Flask server starts automatically (port 8080)
+4. Browser opens with embedded softphone interface
+5. Log in with your CTM agent credentials
+6. Start making calls and managing calls directly from the softphone
+
+**Features:**
+- **Embedded Phone Interface**: Make and receive calls without leaving your workspace
+- **Live Activity Logs**: See incoming/outgoing calls and texts in real-time
+- **Click-to-Call**: Dial directly from logged activity with one click
+- **Auto-Refresh**: Logs update every 30 seconds
+- **Account Management**: Access CTM settings and features
+- **Agent Workspace**: View KPIs and searchable activity filters
+
+**Keeping Softphone Running:**
+- The softphone runs as a local web server while in use
+- It closes when you stop the tool or close the app
+- Open in a separate browser window for best results
+- You can leave it running while using other CTM Companion tools
+
+**Note:** The softphone requires the CTM Softphone Flask app, which is included with CTM Companion. If you're missing the softphone files, download them from [Custom CTM Softphone Example](https://github.com/CTMJSON/Custom-CTM-Softphone-Example).
 
 ---
 
