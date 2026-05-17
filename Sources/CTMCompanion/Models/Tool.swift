@@ -7,6 +7,7 @@ enum ToolID: String, CaseIterable, Identifiable {
     case askAIPromptEnhancer = "askai-prompt-enhancer"
     case supportQnAReport = "ctm-support-qna-report"
     case voiceAITranscriptAnalyzer = "voiceai-transcript-analyzer"
+    case ctmSoftphone = "ctm-softphone"
 
     var id: String { rawValue }
 }
@@ -114,6 +115,19 @@ struct ToolRegistry {
             requiredCredentials: [.ctmBasicAuth, .openAIKey],
             outputDescription: "CSV with GPT-4 analysis + recommendations",
             pythonPackages: ["requests", "openai"]
+        ),
+
+        ToolDefinition(
+            id: .ctmSoftphone,
+            displayName: "CTM Softphone",
+            description: "Embedded CTM phone interface with live call logs, click-to-call, and account management",
+            scriptFilename: "softphone-launcher",
+            parameters: [
+                ToolParameter(id: "notes", label: "About Softphone", type: .text, isRequired: false, helpText: "Click 'Run Tool' below to launch the softphone in your browser. A local web server will be started automatically.")
+            ],
+            requiredCredentials: [.ctmBasicAuth],
+            outputDescription: "Opens embedded CTM phone interface in browser",
+            pythonPackages: ["flask", "requests", "python-dotenv"]
         ),
     ]
 }

@@ -1,4 +1,5 @@
 import Foundation
+import AppKit
 
 actor ScriptRunner {
     private let python: PythonEnvironment
@@ -14,6 +15,11 @@ actor ScriptRunner {
         onLogLine: @escaping (String, Bool) -> Void,
         onExit: @escaping (Int32) -> Void
     ) async throws {
+        // Handle softphone separately (it's a web app, not a Python script)
+        if tool.id == .ctmSoftphone {
+            return await runSoftphone(onLogLine: onLogLine, onExit: onExit)
+        }
+
         let pythonPath = try await python.getVenvPythonPath()
         let outputDir = await python.getOutputPath(for: tool.id.rawValue)
 
@@ -117,6 +123,106 @@ actor ScriptRunner {
         }
 
         return env
+    }
+
+    private func runSoftphone(
+        onLogLine: @escaping (String, Bool) -> Void,
+        onExit: @escaping (Int32) -> Void
+    ) async {
+        onLogLine("🚀 Starting CTM Softphone...", false)
+
+        // Look for softphone directory in multiple locations
+        let fm = FileManager.default
+        let homeDir = fm.homeDirectoryForCurrentUser
+
+        let possiblePaths = [
+            homeDir.appendingPathComponent("ctm-companion/softphone"),
+            homeDir.appendingPathComponent(".ctm-companion/softphone"),
+            URL(fileURLWithPath: "/Users/jasonsmith/ctm-companion/softphone"),
+        ]
+
+        var softphoneDir: URL?
+        for path in possiblePaths {
+            if fm.fileExists(atPath: path.path) {
+                softphoneDir = path
+                break
+            }
+        }
+
+        guard let softphoneDir = softphoneDir else {
+            onLogLine("❌ Softphone directory not found", true)
+            onLogLine("", false)
+            onLogLine("Softphone is included with CTM Companion but requires the softphone folder.", true)
+            onLogLine("", false)
+            onLogLine("If you cloned from GitHub:", false)
+            onLogLine("  The softphone should be in ctm-companion/softphone/", false)
+            onLogLine("", false)
+            onLogLine("If you're using the DMG distribution:", false)
+            onLogLine("  Download the softphone from: https://github.com/CTMJSON/Custom-CTM-Softphone-Example", true)
+            onExit(1)
+            return
+        }
+
+        onLogLine("📍 Found softphone at: \(softphoneDir.path)", false)
+
+        // Start Flask server
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/python3")
+        process.arguments = [softphoneDir.appendingPathComponent("app.py").path]
+        process.currentDirectoryURL = softphoneDir
+
+        let stdoutPipe = Pipe()
+        let stderrPipe = Pipe()
+        process.standardOutput = stdoutPipe
+        process.standardError = stderrPipe
+        process.standardInput = FileHandle.nullDevice
+
+        do {
+            try process.run()
+
+            onLogLine("✅ Softphone server starting...", false)
+            onLogLine("⏳ Waiting for server to be ready...", false)
+
+            // Wait for server to start (check port 8080)
+            var attempts = 0
+            while attempts < 30 {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/usr/bin/python3")
+                process.arguments = ["-c", "import socket; s = socket.socket(); s.connect(('localhost', 8080)); s.close()"]
+
+                let testPipe = Pipe()
+                process.standardOutput = testPipe
+                process.standardError = testPipe
+
+                do {
+                    try process.run()
+                    process.waitUntilExit()
+
+                    if process.terminationStatus == 0 {
+                        onLogLine("✅ Server ready!", false)
+                        onLogLine("🌐 Opening http://localhost:8080 in browser...", false)
+
+                        NSWorkspace.shared.open(URL(string: "http://localhost:8080")!)
+
+                        onLogLine("✅ Softphone opened in browser", false)
+                        onLogLine("💡 Tip: To close the server, close this window or press Ctrl+C", false)
+                        onExit(0)
+                        return
+                    }
+                } catch {
+                    attempts += 1
+                    try? await Task.sleep(nanoseconds: 100_000_000) // Wait 100ms
+                }
+            }
+
+            onLogLine("⚠️ Server timeout - it may still be starting", true)
+            onLogLine("Try opening http://localhost:8080 manually in your browser", false)
+            onExit(0)
+
+        } catch {
+            onLogLine("❌ Failed to start softphone: \(error.localizedDescription)", true)
+            onExit(1)
+        }
     }
 
     private func startPipeReading(
